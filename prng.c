@@ -29,7 +29,7 @@
 
 // PCG family
 // pcg_mcg_16_xsh_rr_8_random_r
-static uint8_t pcg8(void) {
+uint8_t pcg8(void) {
 	static uint16_t state = 0x78b2;
 	static uint16_t const inc = 0x2a31;
 
@@ -50,7 +50,7 @@ uint8_t pcg8_fast(void) {
 	return ((oldstate >> 7U) ^ oldstate) >> ((oldstate >> 14U) + 3U);
 }
 // pcg_mcg_32_xsh_rr_16_random_r
-static uint16_t pcg16(void) {
+uint16_t pcg16(void) {
 	static uint32_t state = 0x406832dd;
 
 	uint32_t oldstate = state;
@@ -61,7 +61,7 @@ static uint16_t pcg16(void) {
 	return (value >> rot) | (value << ((- rot) & 15));
 }
 // pcg_mcg_32_xsh_rs_16_random_r
-static uint16_t pcg16_fast(void) {
+uint16_t pcg16_fast(void) {
 	static uint32_t state = 0x406832dd;
 
 	uint32_t oldstate = state;
@@ -70,7 +70,7 @@ static uint16_t pcg16_fast(void) {
 	return ((oldstate >> 11U) ^ oldstate) >> ((oldstate >> 30U) + 11U);
 }
 // pcg_mcg_64_xsh_rr_32_random_r
-static uint32_t pcg32(void) {
+uint32_t pcg32(void) {
 	static uint64_t state = 0x406832dd910219e5;
 
 	uint64_t oldstate = state;
@@ -81,7 +81,7 @@ static uint32_t pcg32(void) {
 	return (value >> rot) | (value << ((- rot) & 31));
 }
 // pcg_mcg_64_xsh_rs_32_random_r
-static uint32_t pcg32_fast(void) {
+uint32_t pcg32_fast(void) {
 	static uint64_t state = 0x406832dd910219e5;
 
 	uint64_t oldstate = state;
@@ -93,7 +93,7 @@ static uint32_t pcg32_fast(void) {
 
 // Brad Forschinger's 16 bit xorshift rng
 // http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
-static uint16_t xshift16(void) {
+uint16_t xshift16(void) {
 	static uint16_t x = 1, y = 1;
 	uint16_t t = (x ^ (x << 5U));
 	x = y * 3;
@@ -103,7 +103,7 @@ static uint16_t xshift16(void) {
 
 // George Marsaglia's xorshift32
 // https://en.wikipedia.org/wiki/Xorshift
-static uint32_t xorshift32(void) {
+uint32_t xorshift32(void) {
 	// Seed this 32 bit manually
 	static uint32_t a = 0x2b2b0c5a;
 
@@ -115,7 +115,7 @@ static uint32_t xorshift32(void) {
 }
 // George Marsaglia's xorshift64
 // https://en.wikipedia.org/wiki/Xorshift
-static uint64_t xorshift64(void) {
+uint64_t xorshift64(void) {
 	// Seed this 64 bit manually
 	static uint64_t a = 0x0b7195eb5263650b;
 
@@ -127,7 +127,7 @@ static uint64_t xorshift64(void) {
 }
 // George Marsaglia's xorshift128
 // https://en.wikipedia.org/wiki/Xorshift
-static uint32_t xorshift128(void) {
+uint32_t xorshift128(void) {
 	// Seed these 32 bit manually
 	static uint32_t a = 0x16e12e4b;
 	static uint32_t b = 0xe4d4a624;
@@ -144,14 +144,19 @@ static uint32_t xorshift128(void) {
 }
 
 
+// Rotation function macros
+#define rot64(x,k) (((x) << (k))|((x) >> (64 - (k))))
+#define rot32(x,k) (((x) << (k))|((x) >> (32 - (k))))
+#define rot16(x,k) (((x) << (k))|((x) >> (16 - (k))))
+#define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
+
+
 // General-purpose xoshiro 32-bit PRNG variants
 // Improved versions of George Marsaglia xorshift
 // https://prng.di.unimi.it/
-static uint32_t rot32(uint32_t const x, int const k) {
-	return (x << k) | (x >> (32 - k));
-}
-
-static uint32_t xoshiro128ss(void) {
+// uint32_t rot32(uint32_t const x, int const k) { return (x << k) | (x >> (32 - k)); }
+// xoshiro128**
+uint32_t xoshiro128ss(void) {
 	// Seed these 32 bit manually
 	static uint32_t s0 = 0x1e872bf2;
 	static uint32_t s1 = 0xba317487;
@@ -172,7 +177,7 @@ static uint32_t xoshiro128ss(void) {
 	return result;
 }
 // xoshiro128++
-static uint32_t xoshiro128pp(void) {
+uint32_t xoshiro128pp(void) {
 	// Seed these 32 bit manually
 	static uint32_t s0 = 0x1e872bf2;
 	static uint32_t s1 = 0xba317487;
@@ -193,7 +198,7 @@ static uint32_t xoshiro128pp(void) {
 	return result;
 }
 // xoshiro128+ faster variant
-static uint32_t xoshiro128p(void) {
+uint32_t xoshiro128p(void) {
 	// Seed these 32 bit manually
 	static uint32_t s0 = 0x1e872bf2;
 	static uint32_t s1 = 0xba317487;
@@ -215,9 +220,8 @@ static uint32_t xoshiro128p(void) {
 
 }
 // General-purpose xoroshiro 32-bit PRNG variants
-// https://prng.di.unimi.it/
 // xoroshiro64**
-static uint32_t xoroshiro64ss(void) {
+uint32_t xoroshiro64ss(void) {
 	// Seed these 32 bit manually
 	static uint64_t s0 = 0xa83b110b;
 	static uint64_t s1 = 0x9b2d8e32;
@@ -232,8 +236,8 @@ static uint32_t xoroshiro64ss(void) {
 
 	return result;
 }
-// // xoroshiro64* faster variant
-static uint32_t xoroshiro64s(void) {
+// xoroshiro64* faster variant
+uint32_t xoroshiro64s(void) {
 	// Seed these 32 bit manually
 	static uint64_t s0 = 0xa83b110b;
 	static uint64_t s1 = 0x9b2d8e32;
@@ -252,18 +256,16 @@ static uint32_t xoroshiro64s(void) {
 // General-purpose xoshiro 64-bit PRNG variants
 // Improved versions of George Marsaglia xorshift
 // https://prng.di.unimi.it/
-static uint64_t rol64(uint64_t const x, int const k) {
-	return (x << k) | (x >> (64 - k));
-}
+// uint64_t rot64(uint64_t const x, int const k) { return (x << k) | (x >> (64 - k)); }
 // xoshiro256**
-static uint64_t xoshiro256ss(void) {
+uint64_t xoshiro256ss(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0x1e872bf277bbd5e4;
 	static uint64_t s1 = 0xba317487d87c4159;
 	static uint64_t s2 = 0x362fa9620e9a1c8a;
 	static uint64_t s3 = 0xc918db525116e49c;
 
-	uint64_t const result = rol64(s1 * 5, 7) * 9;
+	uint64_t const result = rot64(s1 * 5, 7) * 9;
 	uint64_t const t = s1 << 17;
 
 	s2 ^= s0;
@@ -272,19 +274,19 @@ static uint64_t xoshiro256ss(void) {
 	s0 ^= s3;
 
 	s2 ^= t;
-	s3 = rol64(s3, 45);
+	s3 = rot64(s3, 45);
 
 	return result;
 }
 // xoshiro256++
-static uint64_t xoshiro256pp(void) {
+uint64_t xoshiro256pp(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0x1e872bf277bbd5e4;
 	static uint64_t s1 = 0xba317487d87c4159;
 	static uint64_t s2 = 0x362fa9620e9a1c8a;
 	static uint64_t s3 = 0xc918db525116e49c;
 
-	uint64_t const result = rol64(s0 + s3, 23) + s0;
+	uint64_t const result = rot64(s0 + s3, 23) + s0;
 	uint64_t const t = s1 << 17;
 
 	s2 ^= s0;
@@ -293,12 +295,12 @@ static uint64_t xoshiro256pp(void) {
 	s0 ^= s3;
 
 	s2 ^= t;
-	s3 = rol64(s3, 45);
+	s3 = rot64(s3, 45);
 
 	return result;
 }
 // xoshiro256+ faster variant
-static uint64_t xoshiro256p(void) {
+uint64_t xoshiro256p(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0x300eb059795dc07c;
 	static uint64_t s1 = 0x5b80e5ea8841a0cf;
@@ -314,47 +316,45 @@ static uint64_t xoshiro256p(void) {
 	s0 ^= s3;
 
 	s2 ^= t;
-	s3 = rol64(s3, 45);
+	s3 = rot64(s3, 45);
 
 	return result;
 }
-
 // General-purpose xoroshiro 64-bit PRNG variants
-// https://prng.di.unimi.it/
 // xoroshiro128**
-static uint64_t xoroshiro128ss(void) {
+uint64_t xoroshiro128ss(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0xa838cd0e0aeb110b;
 	static uint64_t s1 = 0x99fe19b209da8e32;
 
 	uint64_t const t0 = s0;
 	uint64_t t1 = s1;
-	uint64_t const result = rol64(t0 * 5, 7) * 9;
+	uint64_t const result = rot64(t0 * 5, 7) * 9;
 
 	t1 ^= t0;
-	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
-	s1 = rol64(t1, 37); // c
+	s0 = rot64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
+	s1 = rot64(t1, 37); // c
 
 	return result;
 }
 // xoroshiro128++
-static uint64_t xoroshiro128pp(void) {
+uint64_t xoroshiro128pp(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0xaafdbd4fce743b4d;
 	static uint64_t s1 = 0xcaee5c952c4ae6a8;
 
 	uint64_t const t0 = s0;
 	uint64_t t1 = s1;
-	uint64_t const result = rol64(t0 + t1, 17) + t0;
+	uint64_t const result = rot64(t0 + t1, 17) + t0;
 
 	t1 ^= t0;
-	s0 = rol64(t0, 49) ^ t1 ^ (t1 << 21); // a, b
-	s1 = rol64(t1, 28); // c
+	s0 = rot64(t0, 49) ^ t1 ^ (t1 << 21); // a, b
+	s1 = rot64(t1, 28); // c
 
 	return result;
 }
 // xoroshiro128+ faster variant
-static uint64_t xoroshiro128p(void) {
+uint64_t xoroshiro128p(void) {
 	// Seed these 64 bit manually
 	static uint64_t s0 = 0x305e0bc4831f6240;
 	static uint64_t s1 = 0x7cff19974aef796d;
@@ -364,17 +364,16 @@ static uint64_t xoroshiro128p(void) {
 	uint64_t const result = t0 + t1;
 
 	t1 ^= t0;
-	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
-	s1 = rol64(t1, 37); // c
+	s0 = rot64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
+	s1 = rot64(t1, 37); // c
 
 	return result;
 }
 
 
-
 // @tzarc's 8 bit XORshift, produces minor repeated pattern
 // https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63
-static uint8_t tzarc_prng(void) {
+uint8_t tzarc_prng(void) {
 	static uint8_t s = 0xAA, a = 0;
 	s ^= s << 3;
 	s ^= s >> 5;
@@ -385,7 +384,7 @@ static uint8_t tzarc_prng(void) {
 
 // Simple 4-register 8 bit XORshift
 // https://github.com/edrosten/8bit_rng
-static uint8_t xshift8(void) {
+uint8_t xshift8(void) {
 	static uint8_t x = 0, y = 0, z = 0, a = 1;
 	uint8_t t = x ^ (x << 5);
 	x = y; y = z; z = a;
@@ -393,10 +392,9 @@ static uint8_t xshift8(void) {
 }
 
 
+// Bob Jenkins Small Fast chaotic PRNG
 // http://burtleburtle.net/bob/rand/smallprng.html
-// jsf = Jenkins Small Fast
-// Bob Jenkins PRNG in 64-bit
-#define rot64(x,k) ((x << k)|(x >> (64 - k)))
+//#define rot64(x,k) (((x) << (k))|((x) >> (64 - (k))))
 uint64_t jsf64(void) {
 	static uint64_t a = 0xf1eaeb0597955eed;
 	static uint64_t b = 0x80ccff3cee5c952c, c = 0x80ccff3cee5c952c, d = 0x80ccff3cee5c952c;
@@ -407,8 +405,7 @@ uint64_t jsf64(void) {
 	c = d + e;
 	return d = e + a;
 }
-// Bob Jenkins PRNG in 32-bit
-#define rot32(x,k) ((x << k)|(x >> (32 - k)))
+//#define rot32(x,k) (((x) << (k))|((x) >> (32 - (k))))
 uint32_t jsf32(void) {
 	static uint32_t a = 0xf1ea5eed;
 	static uint32_t b = 0x80ccff3c, c = 0x80ccff3c, d = 0x80ccff3c;
@@ -419,8 +416,7 @@ uint32_t jsf32(void) {
 	c = d + e;
 	return d = e + a;
 }
-// Bob Jenkins PRNG in 16-bit
-#define rot16(x,k) ((x << k)|(x >> (16 - k)))
+//#define rot16(x,k) (((x) << (k))|((x) >> (16 - (k))))
 uint16_t jsf16(void) {
 	static uint16_t a = 0xf1ea;
 	static uint16_t b = 0x80cc, c = 0x80cc, d = 0x80cc;
@@ -431,8 +427,7 @@ uint16_t jsf16(void) {
 	c = d + e;
 	return d = e + a;
 }
-// Bob Jenkins PRNG in 8-bit
-#define rot8(x,k) ((x << k)|(x >> (8 - k)))
+//#define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
 uint8_t jsf8(void) {
 	static uint8_t a = 0xf1;
 	static uint8_t b = 0xee, c = 0xee, d = 0xee;
@@ -453,32 +448,33 @@ int main(int argc, char** argv) {
 
 	while (1) {
 		if (strcmp(argv[1], "pcg8") == 0) { val8=pcg8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "pcg8_fast") == 0) { val8 = pcg8_fast(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "pcg16") == 0) { val16 = pcg16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
-		if (strcmp(argv[1], "pcg16_fast") == 0) { val16 = pcg16_fast(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
-		if (strcmp(argv[1], "pcg32") == 0) { val32 = pcg32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "pcg32_fast") == 0) { val32 = pcg32_fast(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xshift16") == 0) { val16 = xshift16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
-		if (strcmp(argv[1], "xorshift32") == 0) { val32 = xorshift32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xorshift64") == 0) { val64 = xorshift64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xorshift128") == 0) { val32 = xorshift128(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro128ss") == 0) { val32 = xoshiro128ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro128pp") == 0) { val32 = xoshiro128pp(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro128p") == 0) { val32 = xoshiro128p(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro64ss") == 0) { val32 = xoroshiro64ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro64s") == 0) { val32 = xoroshiro64s(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro256ss") == 0) { val64 = xoshiro256ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro256pp") == 0) { val64 = xoshiro256pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoshiro256p") == 0) { val64 = xoshiro256p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro128ss") == 0) { val64 = xoroshiro128ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro128pp") == 0) { val64 = xoroshiro128pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro128p") == 0) { val64 = xoroshiro128p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "tzarc_prng") == 0) { val8=tzarc_prng(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "xshift8") == 0) { val8=xshift8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "jsf8") == 0) { val8=jsf8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "jsf16") == 0) { val16 = jsf16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
-		if (strcmp(argv[1], "jsf32") == 0) { val32 = jsf32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		if (strcmp(argv[1], "jsf64") == 0) { val64 = jsf64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "pcg8_fast") == 0) { val8 = pcg8_fast(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
+		else if (strcmp(argv[1], "pcg16") == 0) { val16 = pcg16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
+		else if (strcmp(argv[1], "pcg16_fast") == 0) { val16 = pcg16_fast(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
+		else if (strcmp(argv[1], "pcg32") == 0) { val32 = pcg32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "pcg32_fast") == 0) { val32 = pcg32_fast(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xshift16") == 0) { val16 = xshift16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
+		else if (strcmp(argv[1], "xorshift32") == 0) { val32 = xorshift32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xorshift64") == 0) { val64 = xorshift64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xorshift128") == 0) { val32 = xorshift128(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro128ss") == 0) { val32 = xoshiro128ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro128pp") == 0) { val32 = xoshiro128pp(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro128p") == 0) { val32 = xoshiro128p(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoroshiro64ss") == 0) { val32 = xoroshiro64ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoroshiro64s") == 0) { val32 = xoroshiro64s(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro256ss") == 0) { val64 = xoshiro256ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro256pp") == 0) { val64 = xoshiro256pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xoshiro256p") == 0) { val64 = xoshiro256p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xoroshiro128ss") == 0) { val64 = xoroshiro128ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xoroshiro128pp") == 0) { val64 = xoroshiro128pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "xoroshiro128p") == 0) { val64 = xoroshiro128p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "tzarc_prng") == 0) { val8=tzarc_prng(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
+		else if (strcmp(argv[1], "xshift8") == 0) { val8=xshift8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
+		else if (strcmp(argv[1], "jsf8") == 0) { val8=jsf8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
+		else if (strcmp(argv[1], "jsf16") == 0) { val16 = jsf16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
+		else if (strcmp(argv[1], "jsf32") == 0) { val32 = jsf32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		else if (strcmp(argv[1], "jsf64") == 0) { val64 = jsf64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else { return 1; }
 	}
 	return 0;
 }
