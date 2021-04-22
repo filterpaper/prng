@@ -1,3 +1,26 @@
+/* Copyright (C) 2021 @filterpaper
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* This is a repository of various pseudorandom number generator functions
+   with states that are seeded manually.
+
+   Main function will output continuous stream of selected PRNG selected
+   with command line argument.
+ */
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -121,8 +144,114 @@ static uint_fast32_t xorshift128(void) {
 }
 
 
+// General-purpose xoshiro 32-bit PRNG variants
+// Improved versions of George Marsaglia xorshift
+// https://prng.di.unimi.it/
+static uint_fast32_t rot32(uint_fast32_t const x, int const k) {
+	return (x << k) | (x >> (32 - k));
+}
+
+static uint_fast32_t xoshiro128ss(void) {
+	// Seed these 32 bit manually
+	static uint_fast32_t s0 = 0x1e872bf2;
+	static uint_fast32_t s1 = 0xba317487;
+	static uint_fast32_t s2 = 0x362fa962;
+	static uint_fast32_t s3 = 0xc918db52;
+
+	uint_fast32_t const result = rot32(s1 * 5, 7) * 9;
+	uint_fast32_t const t = s1 << 9;
+
+	s2 ^= s0;
+	s3 ^= s1;
+	s1 ^= s2;
+	s0 ^= s3;
+
+	s2 ^= t;
+	s3 = rot32(s3, 11);
+
+	return result;
+}
+// xoshiro128++
+static uint_fast32_t xoshiro128pp(void) {
+	// Seed these 32 bit manually
+	static uint_fast32_t s0 = 0x1e872bf2;
+	static uint_fast32_t s1 = 0xba317487;
+	static uint_fast32_t s2 = 0x362fa962;
+	static uint_fast32_t s3 = 0xc918db52;
+
+	uint_fast32_t const result = rot32(s0 + s3, 7) + s0;
+	uint_fast32_t const t = s1 << 9;
+
+	s2 ^= s0;
+	s3 ^= s1;
+	s1 ^= s2;
+	s0 ^= s3;
+
+	s2 ^= t;
+	s3 = rot32(s3, 11);
+
+	return result;
+}
+// xoshiro128+ faster variant
+static uint_fast32_t xoshiro128p(void) {
+	// Seed these 32 bit manually
+	static uint_fast32_t s0 = 0x1e872bf2;
+	static uint_fast32_t s1 = 0xba317487;
+	static uint_fast32_t s2 = 0x362fa962;
+	static uint_fast32_t s3 = 0xc918db52;
+
+	uint_fast32_t const result = s0 + s3;
+	uint_fast32_t const t = s1 << 9;
+
+	s2 ^= s0;
+	s3 ^= s1;
+	s1 ^= s2;
+	s0 ^= s3;
+
+	s2 ^= t;
+	s3 = rot32(s3, 11);
+
+	return result;
+
+}
+// General-purpose xoroshiro 32-bit PRNG variants
+// https://prng.di.unimi.it/
+// xoroshiro64**
+static uint_fast32_t xoroshiro64ss(void) {
+	// Seed these 32 bit manually
+	static uint_fast64_t s0 = 0xa83b110b;
+	static uint_fast64_t s1 = 0x9b2d8e32;
+
+	uint_fast32_t const t0 = s0;
+	uint_fast32_t t1 = s1;
+	uint_fast32_t const result = rot32(t0 * 0x9e3779bb, 5) * 5;
+
+	t1 ^= t0;
+	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
+	s1 = rot32(t1, 13); // c
+
+	return result;
+}
+// // xoroshiro64* faster variant
+static uint_fast32_t xoroshiro64s(void) {
+	// Seed these 32 bit manually
+	static uint_fast64_t s0 = 0xa83b110b;
+	static uint_fast64_t s1 = 0x9b2d8e32;
+
+	uint_fast32_t const t0 = s0;
+	uint_fast32_t t1 = s1;
+	uint_fast32_t const result = t0 * 0x9e3779bb;
+
+	t1 ^= t0;
+	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
+	s1 = rot32(t1, 13); // c
+
+	return result;
+}
+
 // General-purpose xoshiro 64-bit PRNG variants
-// https://en.wikipedia.org/wiki/Xorshift
+// Improved versions of George Marsaglia xorshift
+// https://prng.di.unimi.it/
 static uint_fast64_t rol64(uint_fast64_t const x, int const k) {
 	return (x << k) | (x >> (64 - k));
 }
@@ -135,6 +264,27 @@ static uint_fast64_t xoshiro256ss(void) {
 	static uint_fast64_t s3 = 0xc918db525116e49c;
 
 	uint_fast64_t const result = rol64(s1 * 5, 7) * 9;
+	uint_fast64_t const t = s1 << 17;
+
+	s2 ^= s0;
+	s3 ^= s1;
+	s1 ^= s2;
+	s0 ^= s3;
+
+	s2 ^= t;
+	s3 = rol64(s3, 45);
+
+	return result;
+}
+// xoshiro256++
+static uint_fast64_t xoshiro256pp(void) {
+	// Seed these 64 bit manually
+	static uint_fast64_t s0 = 0x1e872bf277bbd5e4;
+	static uint_fast64_t s1 = 0xba317487d87c4159;
+	static uint_fast64_t s2 = 0x362fa9620e9a1c8a;
+	static uint_fast64_t s3 = 0xc918db525116e49c;
+
+	uint_fast64_t const result = rol64(s0 + s3, 23) + s0;
 	uint_fast64_t const t = s1 << 17;
 
 	s2 ^= s0;
@@ -169,19 +319,17 @@ static uint_fast64_t xoshiro256p(void) {
 	return result;
 }
 
-
-// xoroshiro 64-bit PRNG variants
-// Utilizes the same xoshiro rotate function
+// General-purpose xoroshiro 64-bit PRNG variants
 // https://prng.di.unimi.it/
-// xoroshiro128+
-static uint_fast64_t xoroshiro128p(void) {
+// xoroshiro128**
+static uint_fast64_t xoroshiro128ss(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0x305e0bc4831f6240;
-	static uint_fast64_t s1 = 0x7cff19974aef796d;
+	static uint_fast64_t s0 = 0xa838cd0e0aeb110b;
+	static uint_fast64_t s1 = 0x99fe19b209da8e32;
 
 	uint_fast64_t const t0 = s0;
 	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = t0 + t1;
+	uint_fast64_t const result = rol64(t0 * 5, 7) * 9;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
@@ -205,15 +353,15 @@ static uint_fast64_t xoroshiro128pp(void) {
 
 	return result;
 }
-// xoroshiro128**
-static uint_fast64_t xoroshiro128ss(void) {
+// xoroshiro128+ faster variant
+static uint_fast64_t xoroshiro128p(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0xa838cd0e0aeb110b;
-	static uint_fast64_t s1 = 0x99fe19b209da8e32;
+	static uint_fast64_t s0 = 0x305e0bc4831f6240;
+	static uint_fast64_t s1 = 0x7cff19974aef796d;
 
 	uint_fast64_t const t0 = s0;
 	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = rol64(t0 * 5, 7) * 9;
+	uint_fast64_t const result = t0 + t1;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
@@ -221,6 +369,7 @@ static uint_fast64_t xoroshiro128ss(void) {
 
 	return result;
 }
+
 
 
 // @tzarc's 8 bit XORshift, produces minor repeated pattern
@@ -314,11 +463,17 @@ int main(int argc, char** argv) {
 		if (strcmp(argv[1], "xorshift32") == 0) { val32 = xorshift32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
 		if (strcmp(argv[1], "xorshift64") == 0) { val64 = xorshift64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		if (strcmp(argv[1], "xorshift128") == 0) { val32 = xorshift128(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		if (strcmp(argv[1], "xoshiro128ss") == 0) { val32 = xoshiro128ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		if (strcmp(argv[1], "xoshiro128pp") == 0) { val32 = xoshiro128pp(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		if (strcmp(argv[1], "xoshiro128p") == 0) { val32 = xoshiro128p(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		if (strcmp(argv[1], "xoroshiro64ss") == 0) { val32 = xoroshiro64ss(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
+		if (strcmp(argv[1], "xoroshiro64s") == 0) { val32 = xoroshiro64s(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
 		if (strcmp(argv[1], "xoshiro256ss") == 0) { val64 = xoshiro256ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		if (strcmp(argv[1], "xoshiro256pp") == 0) { val64 = xoshiro256pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		if (strcmp(argv[1], "xoshiro256p") == 0) { val64 = xoshiro256p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro128p") == 0) { val64 = xoroshiro128p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
-		if (strcmp(argv[1], "xoroshiro128pp") == 0) { val64 = xoroshiro128pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		if (strcmp(argv[1], "xoroshiro128ss") == 0) { val64 = xoroshiro128ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		if (strcmp(argv[1], "xoroshiro128pp") == 0) { val64 = xoroshiro128pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		if (strcmp(argv[1], "xoroshiro128p") == 0) { val64 = xoroshiro128p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		if (strcmp(argv[1], "tzarc_prng") == 0) { val8=tzarc_prng(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		if (strcmp(argv[1], "xshift8") == 0) { val8=xshift8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		if (strcmp(argv[1], "jsf8") == 0) { val8=jsf8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
