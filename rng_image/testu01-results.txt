@@ -1,0 +1,240 @@
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        pcg32
+ Number of statistics:  15
+ Total CPU time:   00:00:10.07
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  2  Collision                        eps
+  3  Gap                              eps
+  4  SimpPoker                        eps
+  5  CouponCollector                  eps
+  6  MaxOft                           eps
+  6  MaxOft AD                      1 - eps1
+  7  WeightDistrib                    eps
+  9  HammingIndep                     eps
+ 10  RandomWalk1 H                    eps
+ 10  RandomWalk1 M                    eps
+ 10  RandomWalk1 J                    eps
+ 10  RandomWalk1 R                    eps
+ 10  RandomWalk1 C                    eps
+ ----------------------------------------------
+ All other tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        pcg32_fast
+ Number of statistics:  15
+ Total CPU time:   00:00:09.55
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        pcg32_minimal
+ Number of statistics:  15
+ Total CPU time:   00:00:10.08
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  2  Collision                        eps
+  3  Gap                              eps
+  4  SimpPoker                        eps
+  5  CouponCollector                  eps
+  6  MaxOft                           eps
+  6  MaxOft AD                      1 - eps1
+  7  WeightDistrib                    eps
+  9  HammingIndep                     eps
+ 10  RandomWalk1 H                    eps
+ 10  RandomWalk1 M                    eps
+ 10  RandomWalk1 J                    eps
+ 10  RandomWalk1 R                    eps
+ 10  RandomWalk1 C                    eps
+ ----------------------------------------------
+ All other tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        rnd_xorshift_16
+ Number of statistics:  15
+ Total CPU time:   00:00:09.50
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  8  MatrixRank                       eps
+ ----------------------------------------------
+ All other tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xorshift32
+ Number of statistics:  15
+ Total CPU time:   00:00:09.44
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  1  BirthdaySpacings              9.5e-190
+  8  MatrixRank                       eps
+ ----------------------------------------------
+ All other tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xorshift64
+ Number of statistics:  15
+ Total CPU time:   00:00:09.41
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  1  BirthdaySpacings                 eps
+  3  Gap                              eps
+  8  MatrixRank                       eps
+  9  HammingIndep                     eps
+ 10  RandomWalk1 H                    eps
+ 10  RandomWalk1 M                    eps
+ 10  RandomWalk1 J                   4.6e-6
+ ----------------------------------------------
+ All other tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xorshift128
+ Number of statistics:  15
+ Total CPU time:   00:00:09.65
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xoshiro256ss
+ Number of statistics:  15
+ Total CPU time:   00:00:09.67
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xoshiro256p
+ Number of statistics:  15
+ Total CPU time:   00:00:09.66
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xoroshiro128p
+ Number of statistics:  15
+ Total CPU time:   00:00:09.52
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xoroshiro128pp
+ Number of statistics:  15
+ Total CPU time:   00:00:09.58
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xoroshiro128ss
+ Number of statistics:  15
+ Total CPU time:   00:00:09.53
+
+ All tests were passed
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        tzarc_prng
+ Number of statistics:  15
+ Total CPU time:   00:00:06.37
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  1  BirthdaySpacings                 eps
+  2  Collision                        eps
+  3  Gap                              eps
+  4  SimpPoker                        eps
+  5  CouponCollector                  eps
+  6  MaxOft                           eps
+  6  MaxOft AD                      1 - eps1
+  7  WeightDistrib                    eps
+  8  MatrixRank                       eps
+  9  HammingIndep                     eps
+ 10  RandomWalk1 H                    eps
+ 10  RandomWalk1 M                    eps
+ 10  RandomWalk1 J                    eps
+ 10  RandomWalk1 R                    eps
+ 10  RandomWalk1 C                    eps
+ ----------------------------------------------
+
+
+========= Summary results of SmallCrush =========
+
+ Version:          TestU01 1.2.3
+ Generator:        xshift8
+ Number of statistics:  15
+ Total CPU time:   00:00:07.71
+ The following tests gave p-values outside [0.001, 0.9990]:
+ (eps  means a value < 1.0e-300):
+ (eps1 means a value < 1.0e-15):
+
+       Test                          p-value
+ ----------------------------------------------
+  1  BirthdaySpacings                 eps
+  2  Collision                        eps
+  6  MaxOft                           eps
+  6  MaxOft AD                      1 - eps1
+  8  MatrixRank                       eps
+ 10  RandomWalk1 H                    eps
+ 10  RandomWalk1 M                    eps
+ 10  RandomWalk1 J                    eps
+ 10  RandomWalk1 R                    eps
+ 10  RandomWalk1 C                    eps
+ ----------------------------------------------
+ All other tests were passed
