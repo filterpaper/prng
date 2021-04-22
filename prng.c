@@ -29,15 +29,15 @@
 
 // PCG family
 // pcg_mcg_16_xsh_rr_8_random_r
-static uint_fast8_t pcg8(void) {
-	static uint_fast16_t state = 0x78b2;
-	static uint_fast16_t const inc = 0x2a31;
+static uint8_t pcg8(void) {
+	static uint16_t state = 0x78b2;
+	static uint16_t const inc = 0x2a31;
 
-	uint_fast16_t oldstate = state;
+	uint16_t oldstate = state;
 	state = state * 12829U;
 
-	uint_fast16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
-	uint_fast32_t rot = oldstate >> 13U;
+	uint16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
+	uint32_t rot = oldstate >> 13U;
 	return (value >> rot) | (value << ((- rot) & 7));
 }
 // pcg_mcg_16_xsh_rs_8_random_r
@@ -57,7 +57,7 @@ static uint16_t pcg16(void) {
 	state = state * 747796405U + 1U;
 
 	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
-	uint_fast32_t rot = oldstate >> 28U;
+	uint32_t rot = oldstate >> 28U;
 	return (value >> rot) | (value << ((- rot) & 15));
 }
 // pcg_mcg_32_xsh_rs_16_random_r
@@ -70,21 +70,21 @@ static uint16_t pcg16_fast(void) {
 	return ((oldstate >> 11U) ^ oldstate) >> ((oldstate >> 30U) + 11U);
 }
 // pcg_mcg_64_xsh_rr_32_random_r
-static uint_fast32_t pcg32(void) {
-	static uint_fast64_t state = 0x406832dd910219e5;
+static uint32_t pcg32(void) {
+	static uint64_t state = 0x406832dd910219e5;
 
-	uint_fast64_t oldstate = state;
+	uint64_t oldstate = state;
 	state = state * 6364136223846793005ULL;
 
-	uint_fast32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
-	uint_fast32_t rot = oldstate >> 59U;
+	uint32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
+	uint32_t rot = oldstate >> 59U;
 	return (value >> rot) | (value << ((- rot) & 31));
 }
 // pcg_mcg_64_xsh_rs_32_random_r
-static uint_fast32_t pcg32_fast(void) {
-	static uint_fast64_t state = 0x406832dd910219e5;
+static uint32_t pcg32_fast(void) {
+	static uint64_t state = 0x406832dd910219e5;
 
-	uint_fast64_t oldstate = state;
+	uint64_t oldstate = state;
 	state = state * 6364136223846793005ULL;
 
 	return ((oldstate >> 22U) ^ oldstate) >> ((oldstate >> 61U) + 22U);
@@ -93,9 +93,9 @@ static uint_fast32_t pcg32_fast(void) {
 
 // Brad Forschinger's 16 bit xorshift rng
 // http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
-static uint_fast16_t xshift16(void) {
-	static uint_fast16_t x = 1, y = 1;
-	uint_fast16_t t = (x ^ (x << 5U));
+static uint16_t xshift16(void) {
+	static uint16_t x = 1, y = 1;
+	uint16_t t = (x ^ (x << 5U));
 	x = y * 3;
 	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
 }
@@ -103,11 +103,11 @@ static uint_fast16_t xshift16(void) {
 
 // George Marsaglia's xorshift32
 // https://en.wikipedia.org/wiki/Xorshift
-static uint_fast32_t xorshift32(void) {
+static uint32_t xorshift32(void) {
 	// Seed this 32 bit manually
-	static uint_fast32_t a = 0x2b2b0c5a;
+	static uint32_t a = 0x2b2b0c5a;
 
-	uint_fast32_t x = a;
+	uint32_t x = a;
 	x ^= x << 13;
 	x ^= x >> 17;
 	x ^= x << 5;
@@ -115,11 +115,11 @@ static uint_fast32_t xorshift32(void) {
 }
 // George Marsaglia's xorshift64
 // https://en.wikipedia.org/wiki/Xorshift
-static uint_fast64_t xorshift64(void) {
+static uint64_t xorshift64(void) {
 	// Seed this 64 bit manually
-	static uint_fast64_t a = 0x0b7195eb5263650b;
+	static uint64_t a = 0x0b7195eb5263650b;
 
-	uint_fast64_t x = a;
+	uint64_t x = a;
 	x ^= x << 13;
 	x ^= x >> 7;
 	x ^= x << 17;
@@ -127,15 +127,15 @@ static uint_fast64_t xorshift64(void) {
 }
 // George Marsaglia's xorshift128
 // https://en.wikipedia.org/wiki/Xorshift
-static uint_fast32_t xorshift128(void) {
+static uint32_t xorshift128(void) {
 	// Seed these 32 bit manually
-	static uint_fast32_t a = 0x16e12e4b;
-	static uint_fast32_t b = 0xe4d4a624;
-	static uint_fast32_t c = 0x80ccff3c;
-	static uint_fast32_t d = 0x3b9b979f;
+	static uint32_t a = 0x16e12e4b;
+	static uint32_t b = 0xe4d4a624;
+	static uint32_t c = 0x80ccff3c;
+	static uint32_t d = 0x3b9b979f;
 
-	uint_fast32_t t = d;
-	uint_fast32_t const s = a;
+	uint32_t t = d;
+	uint32_t const s = a;
 	d = c; c = b; b = s;
 
 	t ^= t << 11;
@@ -147,19 +147,19 @@ static uint_fast32_t xorshift128(void) {
 // General-purpose xoshiro 32-bit PRNG variants
 // Improved versions of George Marsaglia xorshift
 // https://prng.di.unimi.it/
-static uint_fast32_t rot32(uint_fast32_t const x, int const k) {
+static uint32_t rot32(uint32_t const x, int const k) {
 	return (x << k) | (x >> (32 - k));
 }
 
-static uint_fast32_t xoshiro128ss(void) {
+static uint32_t xoshiro128ss(void) {
 	// Seed these 32 bit manually
-	static uint_fast32_t s0 = 0x1e872bf2;
-	static uint_fast32_t s1 = 0xba317487;
-	static uint_fast32_t s2 = 0x362fa962;
-	static uint_fast32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x1e872bf2;
+	static uint32_t s1 = 0xba317487;
+	static uint32_t s2 = 0x362fa962;
+	static uint32_t s3 = 0xc918db52;
 
-	uint_fast32_t const result = rot32(s1 * 5, 7) * 9;
-	uint_fast32_t const t = s1 << 9;
+	uint32_t const result = rot32(s1 * 5, 7) * 9;
+	uint32_t const t = s1 << 9;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -172,15 +172,15 @@ static uint_fast32_t xoshiro128ss(void) {
 	return result;
 }
 // xoshiro128++
-static uint_fast32_t xoshiro128pp(void) {
+static uint32_t xoshiro128pp(void) {
 	// Seed these 32 bit manually
-	static uint_fast32_t s0 = 0x1e872bf2;
-	static uint_fast32_t s1 = 0xba317487;
-	static uint_fast32_t s2 = 0x362fa962;
-	static uint_fast32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x1e872bf2;
+	static uint32_t s1 = 0xba317487;
+	static uint32_t s2 = 0x362fa962;
+	static uint32_t s3 = 0xc918db52;
 
-	uint_fast32_t const result = rot32(s0 + s3, 7) + s0;
-	uint_fast32_t const t = s1 << 9;
+	uint32_t const result = rot32(s0 + s3, 7) + s0;
+	uint32_t const t = s1 << 9;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -193,15 +193,15 @@ static uint_fast32_t xoshiro128pp(void) {
 	return result;
 }
 // xoshiro128+ faster variant
-static uint_fast32_t xoshiro128p(void) {
+static uint32_t xoshiro128p(void) {
 	// Seed these 32 bit manually
-	static uint_fast32_t s0 = 0x1e872bf2;
-	static uint_fast32_t s1 = 0xba317487;
-	static uint_fast32_t s2 = 0x362fa962;
-	static uint_fast32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x1e872bf2;
+	static uint32_t s1 = 0xba317487;
+	static uint32_t s2 = 0x362fa962;
+	static uint32_t s3 = 0xc918db52;
 
-	uint_fast32_t const result = s0 + s3;
-	uint_fast32_t const t = s1 << 9;
+	uint32_t const result = s0 + s3;
+	uint32_t const t = s1 << 9;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -217,14 +217,14 @@ static uint_fast32_t xoshiro128p(void) {
 // General-purpose xoroshiro 32-bit PRNG variants
 // https://prng.di.unimi.it/
 // xoroshiro64**
-static uint_fast32_t xoroshiro64ss(void) {
+static uint32_t xoroshiro64ss(void) {
 	// Seed these 32 bit manually
-	static uint_fast64_t s0 = 0xa83b110b;
-	static uint_fast64_t s1 = 0x9b2d8e32;
+	static uint64_t s0 = 0xa83b110b;
+	static uint64_t s1 = 0x9b2d8e32;
 
-	uint_fast32_t const t0 = s0;
-	uint_fast32_t t1 = s1;
-	uint_fast32_t const result = rot32(t0 * 0x9e3779bb, 5) * 5;
+	uint32_t const t0 = s0;
+	uint32_t t1 = s1;
+	uint32_t const result = rot32(t0 * 0x9e3779bb, 5) * 5;
 
 	t1 ^= t0;
 	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
@@ -233,14 +233,14 @@ static uint_fast32_t xoroshiro64ss(void) {
 	return result;
 }
 // // xoroshiro64* faster variant
-static uint_fast32_t xoroshiro64s(void) {
+static uint32_t xoroshiro64s(void) {
 	// Seed these 32 bit manually
-	static uint_fast64_t s0 = 0xa83b110b;
-	static uint_fast64_t s1 = 0x9b2d8e32;
+	static uint64_t s0 = 0xa83b110b;
+	static uint64_t s1 = 0x9b2d8e32;
 
-	uint_fast32_t const t0 = s0;
-	uint_fast32_t t1 = s1;
-	uint_fast32_t const result = t0 * 0x9e3779bb;
+	uint32_t const t0 = s0;
+	uint32_t t1 = s1;
+	uint32_t const result = t0 * 0x9e3779bb;
 
 	t1 ^= t0;
 	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
@@ -252,19 +252,19 @@ static uint_fast32_t xoroshiro64s(void) {
 // General-purpose xoshiro 64-bit PRNG variants
 // Improved versions of George Marsaglia xorshift
 // https://prng.di.unimi.it/
-static uint_fast64_t rol64(uint_fast64_t const x, int const k) {
+static uint64_t rol64(uint64_t const x, int const k) {
 	return (x << k) | (x >> (64 - k));
 }
 // xoshiro256**
-static uint_fast64_t xoshiro256ss(void) {
+static uint64_t xoshiro256ss(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0x1e872bf277bbd5e4;
-	static uint_fast64_t s1 = 0xba317487d87c4159;
-	static uint_fast64_t s2 = 0x362fa9620e9a1c8a;
-	static uint_fast64_t s3 = 0xc918db525116e49c;
+	static uint64_t s0 = 0x1e872bf277bbd5e4;
+	static uint64_t s1 = 0xba317487d87c4159;
+	static uint64_t s2 = 0x362fa9620e9a1c8a;
+	static uint64_t s3 = 0xc918db525116e49c;
 
-	uint_fast64_t const result = rol64(s1 * 5, 7) * 9;
-	uint_fast64_t const t = s1 << 17;
+	uint64_t const result = rol64(s1 * 5, 7) * 9;
+	uint64_t const t = s1 << 17;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -277,15 +277,15 @@ static uint_fast64_t xoshiro256ss(void) {
 	return result;
 }
 // xoshiro256++
-static uint_fast64_t xoshiro256pp(void) {
+static uint64_t xoshiro256pp(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0x1e872bf277bbd5e4;
-	static uint_fast64_t s1 = 0xba317487d87c4159;
-	static uint_fast64_t s2 = 0x362fa9620e9a1c8a;
-	static uint_fast64_t s3 = 0xc918db525116e49c;
+	static uint64_t s0 = 0x1e872bf277bbd5e4;
+	static uint64_t s1 = 0xba317487d87c4159;
+	static uint64_t s2 = 0x362fa9620e9a1c8a;
+	static uint64_t s3 = 0xc918db525116e49c;
 
-	uint_fast64_t const result = rol64(s0 + s3, 23) + s0;
-	uint_fast64_t const t = s1 << 17;
+	uint64_t const result = rol64(s0 + s3, 23) + s0;
+	uint64_t const t = s1 << 17;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -298,15 +298,15 @@ static uint_fast64_t xoshiro256pp(void) {
 	return result;
 }
 // xoshiro256+ faster variant
-static uint_fast64_t xoshiro256p(void) {
+static uint64_t xoshiro256p(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0x300eb059795dc07c;
-	static uint_fast64_t s1 = 0x5b80e5ea8841a0cf;
-	static uint_fast64_t s2 = 0x919572a617c344d3;
-	static uint_fast64_t s3 = 0xa92e3913be8d584d;
+	static uint64_t s0 = 0x300eb059795dc07c;
+	static uint64_t s1 = 0x5b80e5ea8841a0cf;
+	static uint64_t s2 = 0x919572a617c344d3;
+	static uint64_t s3 = 0xa92e3913be8d584d;
 
-	uint_fast64_t const result = s0 + s3;
-	uint_fast64_t const t = s1 << 17;
+	uint64_t const result = s0 + s3;
+	uint64_t const t = s1 << 17;
 
 	s2 ^= s0;
 	s3 ^= s1;
@@ -322,14 +322,14 @@ static uint_fast64_t xoshiro256p(void) {
 // General-purpose xoroshiro 64-bit PRNG variants
 // https://prng.di.unimi.it/
 // xoroshiro128**
-static uint_fast64_t xoroshiro128ss(void) {
+static uint64_t xoroshiro128ss(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0xa838cd0e0aeb110b;
-	static uint_fast64_t s1 = 0x99fe19b209da8e32;
+	static uint64_t s0 = 0xa838cd0e0aeb110b;
+	static uint64_t s1 = 0x99fe19b209da8e32;
 
-	uint_fast64_t const t0 = s0;
-	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = rol64(t0 * 5, 7) * 9;
+	uint64_t const t0 = s0;
+	uint64_t t1 = s1;
+	uint64_t const result = rol64(t0 * 5, 7) * 9;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
@@ -338,14 +338,14 @@ static uint_fast64_t xoroshiro128ss(void) {
 	return result;
 }
 // xoroshiro128++
-static uint_fast64_t xoroshiro128pp(void) {
+static uint64_t xoroshiro128pp(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0xaafdbd4fce743b4d;
-	static uint_fast64_t s1 = 0xcaee5c952c4ae6a8;
+	static uint64_t s0 = 0xaafdbd4fce743b4d;
+	static uint64_t s1 = 0xcaee5c952c4ae6a8;
 
-	uint_fast64_t const t0 = s0;
-	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = rol64(t0 + t1, 17) + t0;
+	uint64_t const t0 = s0;
+	uint64_t t1 = s1;
+	uint64_t const result = rol64(t0 + t1, 17) + t0;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 49) ^ t1 ^ (t1 << 21); // a, b
@@ -354,14 +354,14 @@ static uint_fast64_t xoroshiro128pp(void) {
 	return result;
 }
 // xoroshiro128+ faster variant
-static uint_fast64_t xoroshiro128p(void) {
+static uint64_t xoroshiro128p(void) {
 	// Seed these 64 bit manually
-	static uint_fast64_t s0 = 0x305e0bc4831f6240;
-	static uint_fast64_t s1 = 0x7cff19974aef796d;
+	static uint64_t s0 = 0x305e0bc4831f6240;
+	static uint64_t s1 = 0x7cff19974aef796d;
 
-	uint_fast64_t const t0 = s0;
-	uint_fast64_t t1 = s1;
-	uint_fast64_t const result = t0 + t1;
+	uint64_t const t0 = s0;
+	uint64_t t1 = s1;
+	uint64_t const result = t0 + t1;
 
 	t1 ^= t0;
 	s0 = rol64(t0, 24) ^ t1 ^ (t1 << 16); // a, b
@@ -385,9 +385,9 @@ static uint8_t tzarc_prng(void) {
 
 // Simple 4-register 8 bit XORshift
 // https://github.com/edrosten/8bit_rng
-static uint_fast8_t xshift8(void) {
-	static uint_fast8_t x = 0, y = 0, z = 0, a = 1;
-	uint_fast8_t t = x ^ (x << 5);
+static uint8_t xshift8(void) {
+	static uint8_t x = 0, y = 0, z = 0, a = 1;
+	uint8_t t = x ^ (x << 5);
 	x = y; y = z; z = a;
 	return a = z ^ ( z >> 1) ^ t ^ (t << 3);
 }
@@ -453,7 +453,6 @@ int main(int argc, char** argv) {
 
 	while (1) {
 		if (strcmp(argv[1], "pcg8") == 0) { val8=pcg8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
-		if (strcmp(argv[1], "pcg8_fast") == 0) { val8 = pcg8_fast(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		if (strcmp(argv[1], "pcg8_fast") == 0) { val8 = pcg8_fast(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		if (strcmp(argv[1], "pcg16") == 0) { val16 = pcg16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
 		if (strcmp(argv[1], "pcg16_fast") == 0) { val16 = pcg16_fast(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
