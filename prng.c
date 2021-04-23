@@ -28,17 +28,20 @@
 
 
 // PCG family
+// https://www.pcg-random.org/download.html
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
-	static uint16_t state = 0x78b2;
-	static uint16_t const inc = 0x2a31;
+	static uint16_t state = 0x2fd5;
+	static uint16_t const inc = 0x8893;
 
 	uint16_t oldstate = state;
-	state = state * 12829U;
+	state = state * 12829U + (inc|1);
 
-	uint16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
+/*	uint16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
 	uint32_t rot = oldstate >> 13U;
-	return (value >> rot) | (value << ((- rot) & 7));
+	return (value >> rot) | (value << ((- rot) & 7));*/
+	#define pcg_rot8(x,k) (((x) >> (k))|((x) << ((- k) & 7)))
+	return pcg_rot8((uint8_t)(((oldstate >> 5U) ^ oldstate) >> 5U), (oldstate >> 13U));
 }
 // pcg_mcg_16_xsh_rs_8_random_r
 uint8_t pcg8_fast(void) {
@@ -51,14 +54,17 @@ uint8_t pcg8_fast(void) {
 }
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
-	static uint32_t state = 0x406832dd;
+	static uint32_t state = 0x33067c1f;
+	static uint32_t const inc = 0x0a29cacc;
 
 	uint32_t oldstate = state;
-	state = state * 747796405U + 1U;
+	state = state * 747796405U + (inc|1);
 
-	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
+/*	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
 	uint32_t rot = oldstate >> 28U;
-	return (value >> rot) | (value << ((- rot) & 15));
+	return (value >> rot) | (value << ((- rot) & 15));*/
+	#define pcg_rot16(x,k) (((x) >> (k))|((x) << ((- k) & 15)))
+	return pcg_rot16((uint16_t)(((oldstate >> 10U) ^ oldstate) >> 12U), (oldstate >> 28U));
 }
 // pcg_mcg_32_xsh_rs_16_random_r
 uint16_t pcg16_fast(void) {
@@ -71,14 +77,17 @@ uint16_t pcg16_fast(void) {
 }
 // pcg_mcg_64_xsh_rr_32_random_r
 uint32_t pcg32(void) {
-	static uint64_t state = 0x406832dd910219e5;
+	static uint64_t state = 0x7e80dd681fd723f5;
+	static uint64_t const inc = 0x9ca185c64b7bf115;
 
 	uint64_t oldstate = state;
-	state = state * 6364136223846793005ULL;
+	state = state * 6364136223846793005ULL + (inc|1);
 
-	uint32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
+/*	uint32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
 	uint32_t rot = oldstate >> 59U;
-	return (value >> rot) | (value << ((- rot) & 31));
+	return (value >> rot) | (value << ((- rot) & 31));*/
+	#define pcg_rot32(x,k) (((x) >> (k))|((x) << ((- k) & 31)))
+	return pcg_rot32((uint32_t)(((oldstate >> 18U) ^ oldstate) >> 27U), (oldstate >> 59U));
 }
 // pcg_mcg_64_xsh_rs_32_random_r
 uint32_t pcg32_fast(void) {
@@ -91,17 +100,7 @@ uint32_t pcg32_fast(void) {
 }
 
 
-// Brad Forschinger's 16 bit xorshift rng
-// http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
-uint16_t xshift16(void) {
-	static uint16_t x = 1, y = 1;
-	uint16_t t = (x ^ (x << 5U));
-	x = y * 3;
-	return y = (y ^ (y >> 1U)) ^ (t ^ (t >> 3U));
-}
-
-
-// George Marsaglia's xorshift32
+// George Marsaglia's XORshift variants
 // https://en.wikipedia.org/wiki/Xorshift
 uint32_t xorshift32(void) {
 	// Seed this 32 bit manually
@@ -113,8 +112,6 @@ uint32_t xorshift32(void) {
 	x ^= x << 5;
 	return a = x;
 }
-// George Marsaglia's xorshift64
-// https://en.wikipedia.org/wiki/Xorshift
 uint64_t xorshift64(void) {
 	// Seed this 64 bit manually
 	static uint64_t a = 0x0b7195eb5263650b;
@@ -125,8 +122,6 @@ uint64_t xorshift64(void) {
 	x ^= x << 17;
 	return a = x;
 }
-// George Marsaglia's xorshift128
-// https://en.wikipedia.org/wiki/Xorshift
 uint32_t xorshift128(void) {
 	// Seed these 32 bit manually
 	static uint32_t a = 0x16e12e4b;
@@ -371,6 +366,17 @@ uint64_t xoroshiro128p(void) {
 }
 
 
+// Brad Forschinger's 16 bit xorshift rng
+// http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
+uint16_t brad16(void) {
+	static uint8_t const a = 5, b = 3, c = 13;
+	static uint16_t x = 1, y = 1;
+	uint16_t t = (x ^ (x << a));
+	x = y * 3;
+	return y = (y ^ (y >> c)) ^ (t ^ (t >> b));
+}
+
+
 // @tzarc's 8 bit XORshift, produces minor repeated pattern
 // https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63
 uint8_t tzarc_prng(void) {
@@ -416,6 +422,7 @@ uint32_t jsf32(void) {
 	c = d + e;
 	return d = e + a;
 }
+// https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html
 //#define rot16(x,k) (((x) << (k))|((x) >> (16 - (k))))
 uint16_t jsf16(void) {
 	static uint16_t a = 0xf1ea;
@@ -427,6 +434,7 @@ uint16_t jsf16(void) {
 	c = d + e;
 	return d = e + a;
 }
+// https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html
 //#define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
 uint8_t jsf8(void) {
 	static uint8_t a = 0xf1;
@@ -453,7 +461,6 @@ int main(int argc, char** argv) {
 		else if (strcmp(argv[1], "pcg16_fast") == 0) { val16 = pcg16_fast(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
 		else if (strcmp(argv[1], "pcg32") == 0) { val32 = pcg32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
 		else if (strcmp(argv[1], "pcg32_fast") == 0) { val32 = pcg32_fast(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
-		else if (strcmp(argv[1], "xshift16") == 0) { val16 = xshift16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
 		else if (strcmp(argv[1], "xorshift32") == 0) { val32 = xorshift32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
 		else if (strcmp(argv[1], "xorshift64") == 0) { val64 = xorshift64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		else if (strcmp(argv[1], "xorshift128") == 0) { val32 = xorshift128(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
@@ -468,6 +475,7 @@ int main(int argc, char** argv) {
 		else if (strcmp(argv[1], "xoroshiro128ss") == 0) { val64 = xoroshiro128ss(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		else if (strcmp(argv[1], "xoroshiro128pp") == 0) { val64 = xoroshiro128pp(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
 		else if (strcmp(argv[1], "xoroshiro128p") == 0) { val64 = xoroshiro128p(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "brad16") == 0) { val16 = brad16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
 		else if (strcmp(argv[1], "tzarc_prng") == 0) { val8=tzarc_prng(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		else if (strcmp(argv[1], "xshift8") == 0) { val8=xshift8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		else if (strcmp(argv[1], "jsf8") == 0) { val8=jsf8(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }

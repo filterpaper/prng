@@ -45,7 +45,6 @@
 //#define RND pcg16_fast()
 //#define RND pcg32()
 //#define RND pcg32_fast()
-//#define RND rnd_xorshift_16()
 //#define RND xorshift32()
 //#define RND xorshift64()
 //#define RND xorshift128()
@@ -54,6 +53,7 @@
 //#define RND xoroshiro128p()
 //#define RND xoroshiro128pp()
 //#define RND xoroshiro128ss()
+//#define RND brad16()
 //#define RND tzarc_prng()
 //#define RND xshift8()
 //#define RND jsf64()
@@ -62,17 +62,16 @@
 //#define RND jsf8()
 
 
-
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
-	static uint16_t state = 0x6835;
+	static uint16_t state = 0x2fd5;
+	static uint16_t const inc = 0x8893;
 
 	uint16_t oldstate = state;
-	state = state * 12829U;
+	state = state * 12829U + (inc|1);
 
-	uint8_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
-	uint32_t rot = oldstate >> 13U;
-	return (value >> rot) | (value << ((- rot) & 7));
+	#define pcg_rot8(x,k) (((x) >> (k))|((x) << ((- k) & 7)))
+	return pcg_rot8((uint8_t)(((oldstate >> 5U) ^ oldstate) >> 5U), (oldstate >> 13U));
 }
 
 // pcg_mcg_16_xsh_rs_8_random_r
@@ -93,9 +92,11 @@ static uint16_t pcg16(void) {
 	uint32_t oldstate = state;
 	state = state * 747796405U + 1U;
 
-	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
+/*	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
 	uint32_t rot = oldstate >> 28U;
-	return (value >> rot) | (value << ((- rot) & 15));
+	return (value >> rot) | (value << ((- rot) & 15));*/
+	#define pcg_rot16(x,k) (((x) >> (k))|((x) << ((- k) & 15)))
+	return pcg_rot16((uint16_t)(((oldstate >> 10U) ^ oldstate) >> 12U), (oldstate >> 28U));
 }
 
 // pcg_mcg_32_xsh_rs_16_random_r
@@ -132,15 +133,6 @@ static uint32_t pcg32_fast(void) {
 }
 
 
-
-// Brad Forschinger's 16 bit xorshift rng
-// http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
-static uint_fast16_t rnd_xorshift_16(void) {
-	static uint_fast16_t x = 1, y = 1;
-	uint_fast16_t t = (x ^ (x << 5));
-	x = y;
-	return y = (y ^ (y >> 1)) ^ (t ^ (t >> 3));
-}
 
 
 // George Marsaglia's xorshift32
@@ -295,6 +287,16 @@ static uint_fast64_t xoroshiro128ss(void) {
 	return result;
 }
 
+
+// Brad Forschinger's 16 bit xorshift rng
+// http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
+uint16_t brad16(void) {
+	static uint8_t const a = 5, b = 3, c = 13;
+	static uint16_t x = 1, y = 1;
+	uint16_t t = (x ^ (x << a));
+	x = y * 3;
+	return y = (y ^ (y >> c)) ^ (t ^ (t >> b));
+}
 
 
 // @tzarc's 8 bit XORshift, produces minor repeated pattern

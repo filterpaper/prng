@@ -24,28 +24,17 @@ void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) 
 	pcg32_random_r(rng);
 }
 
-
-
-uint8_t pcg8(void) {
-	static uint16_t state = 0x6832;
-
-	uint16_t oldstate = state;
-	state = state * 12829U + 1U;
-
-	uint_fast16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
-	uint_fast32_t rot = oldstate >> 13U;
-	return (value >> rot) | (value << ((- rot) & 7));
-}
-
-
 int main() {
 	size_t i;
 	pcg32_random_t pcg;
-	//pcg32_srandom_r(&pcg, 42u, 52u);
-	pcg32_srandom_r(&pcg, time(NULL), time(NULL));
+
+	// seeding
+	srand(time(NULL));
+	pcg32_srandom_r(&pcg, rand(), rand());
+
 	printf("state: 0x%16llx  inc: 0x%16llx\n", pcg.state, pcg.inc);
 
-	for (i = 0; i < 16; i++) {
+	for (i = 0; i < 10; i++) {
 		printf("0x%08x\n", pcg32_random_r(&pcg));
 		//printf("%u\n", pcg8());
 	}
