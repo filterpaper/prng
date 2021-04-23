@@ -23,19 +23,19 @@
 #include <stdio.h>
 #include <time.h>
 
-typedef uint16_t u8;
-typedef struct ranctx { u8 a; u8 b; u8 c; u8 d; } ranctx;
+typedef uint16_t u2;
+typedef struct ranctx { u2 a; u2 b; u2 c; u2 d; } ranctx;
 
 #define rot(x,k) (((x)<<(k))|((x)>>(16-(k))))
-u8 ranval (ranctx *x) {
-	u8 e = x->a - rot(x->b, 13);
+u2 ranval (ranctx *x) {
+	u2 e = x->a - rot(x->b, 13);
 	x->a = x->b ^ rot(x->c, 8);
 	x->b = x->c + x->d;
 	x->c = x->d + e;
 	return x->d = e + x->a;
 }
 
-void raninit (ranctx *x, u8 seed) {
+void raninit (ranctx *x, u2 seed) {
 	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
