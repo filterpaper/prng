@@ -31,8 +31,8 @@
 // https://www.pcg-random.org/download.html
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
-	static uint16_t state = 0x2fd5;
-	static uint16_t const inc = 0x8893;
+	static uint16_t state = 0x9af1;
+	static uint16_t const inc = 0x0527;
 
 	uint16_t x = state;
 	state = state * 12829U + (inc|1);
@@ -43,7 +43,7 @@ uint8_t pcg8(void) {
 }
 // pcg_mcg_16_xsh_rs_8_random_r
 uint8_t pcg8_fast(void) {
-	static uint16_t state = 0xc206;
+	static uint16_t state = 0x1091;
 
 	uint16_t x = state;
 	state = state * 12829U;
@@ -52,8 +52,8 @@ uint8_t pcg8_fast(void) {
 }
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
-	static uint32_t state = 0x33067c1f;
-	static uint32_t const inc = 0x0a29cacc;
+	static uint32_t state = 0xdc384d8b;
+	static uint32_t const inc = 0xbb7dc6ee;
 
 	uint32_t x = state;
 	state = state * 747796405U + (inc|1);
@@ -64,7 +64,7 @@ uint16_t pcg16(void) {
 }
 // pcg_mcg_32_xsh_rs_16_random_r
 uint16_t pcg16_fast(void) {
-	static uint32_t state = 0x406832dd;
+	static uint32_t state = 0x8fe2b20f;
 
 	uint32_t x = state;
 	state = state * 747796405U + 1U;
@@ -73,8 +73,8 @@ uint16_t pcg16_fast(void) {
 }
 // pcg_mcg_64_xsh_rr_32_random_r
 uint32_t pcg32(void) {
-	static uint64_t state = 0x7e80dd681fd723f5;
-	static uint64_t const inc = 0x9ca185c64b7bf115;
+	static uint64_t state = 0x385230e79de99aa9;
+	static uint64_t const inc = 0xaffa9d760680f66d;
 
 	uint64_t x = state;
 	state = state * 6364136223846793005ULL + (inc|1);
@@ -85,7 +85,7 @@ uint32_t pcg32(void) {
 }
 // pcg_mcg_64_xsh_rs_32_random_r
 uint32_t pcg32_fast(void) {
-	static uint64_t state = 0x406832dd910219e5;
+	static uint64_t state = 0x2c13ae4bbe60e39d;
 
 	uint64_t x = state;
 	state = state * 6364136223846793005ULL;
@@ -98,7 +98,7 @@ uint32_t pcg32_fast(void) {
 // https://en.wikipedia.org/wiki/Xorshift
 uint32_t xorshift32(void) {
 	// Seed this 32 bit manually
-	static uint32_t a = 0x2b2b0c5a;
+	static uint32_t a = 0xe326df69;
 
 	uint32_t x = a;
 	x ^= x << 13;
@@ -108,7 +108,7 @@ uint32_t xorshift32(void) {
 }
 uint64_t xorshift64(void) {
 	// Seed this 64 bit manually
-	static uint64_t a = 0x0b7195eb5263650b;
+	static uint64_t a = 0xa87bf8a757164547;
 
 	uint64_t x = a;
 	x ^= x << 13;
@@ -118,10 +118,10 @@ uint64_t xorshift64(void) {
 }
 uint32_t xorshift128(void) {
 	// Seed these 32 bit manually
-	static uint32_t a = 0x16e12e4b;
-	static uint32_t b = 0xe4d4a624;
-	static uint32_t c = 0x80ccff3c;
-	static uint32_t d = 0x3b9b979f;
+	static uint32_t a = 0xd2b9a87b;
+	static uint32_t b = 0xec2cf2be;
+	static uint32_t c = 0xdc317cfe;
+	static uint32_t d = 0x350ad9e0;
 
 	uint32_t t = d;
 	uint32_t const s = a;
@@ -147,10 +147,10 @@ uint32_t xorshift128(void) {
 // xoshiro128**
 uint32_t xoshiro128ss(void) {
 	// Seed these 32 bit manually
-	static uint32_t s0 = 0x1e872bf2;
-	static uint32_t s1 = 0xba317487;
-	static uint32_t s2 = 0x362fa962;
-	static uint32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x6fe7bc01;
+	static uint32_t s1 = 0x964fdc0a;
+	static uint32_t s2 = 0xff50ac5b;
+	static uint32_t s3 = 0x252d2a75;
 
 	uint32_t const result = rot32(s1 * 5, 7) * 9;
 	uint32_t const t = s1 << 9;
@@ -168,10 +168,10 @@ uint32_t xoshiro128ss(void) {
 // xoshiro128++
 uint32_t xoshiro128pp(void) {
 	// Seed these 32 bit manually
-	static uint32_t s0 = 0x1e872bf2;
-	static uint32_t s1 = 0xba317487;
-	static uint32_t s2 = 0x362fa962;
-	static uint32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x0ceda153;
+	static uint32_t s1 = 0xb0bc8889;
+	static uint32_t s2 = 0x83f6c7bf;
+	static uint32_t s3 = 0x83fe4c65;
 
 	uint32_t const result = rot32(s0 + s3, 7) + s0;
 	uint32_t const t = s1 << 9;
@@ -189,10 +189,10 @@ uint32_t xoshiro128pp(void) {
 // xoshiro128+ faster variant
 uint32_t xoshiro128p(void) {
 	// Seed these 32 bit manually
-	static uint32_t s0 = 0x1e872bf2;
-	static uint32_t s1 = 0xba317487;
-	static uint32_t s2 = 0x362fa962;
-	static uint32_t s3 = 0xc918db52;
+	static uint32_t s0 = 0x576d09dd;
+	static uint32_t s1 = 0x55f240a1;
+	static uint32_t s2 = 0xe8f90408;
+	static uint32_t s3 = 0xa831286c;
 
 	uint32_t const result = s0 + s3;
 	uint32_t const t = s1 << 9;
@@ -212,12 +212,12 @@ uint32_t xoshiro128p(void) {
 // xoroshiro64**
 uint32_t xoroshiro64ss(void) {
 	// Seed these 32 bit manually
-	static uint64_t s0 = 0xa83b110b;
-	static uint64_t s1 = 0x9b2d8e32;
+	static uint64_t s0 = 0x5b7fc314;
+	static uint64_t s1 = 0xf704b0c6;
 
 	uint32_t const t0 = s0;
 	uint32_t t1 = s1;
-	uint32_t const result = rot32(t0 * 0x9e3779bb, 5) * 5;
+	uint32_t const result = rot32(t0 * 0x03641019, 5) * 5;
 
 	t1 ^= t0;
 	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
@@ -228,12 +228,12 @@ uint32_t xoroshiro64ss(void) {
 // xoroshiro64* faster variant
 uint32_t xoroshiro64s(void) {
 	// Seed these 32 bit manually
-	static uint64_t s0 = 0xa83b110b;
-	static uint64_t s1 = 0x9b2d8e32;
+	static uint64_t s0 = 0x7016abff;
+	static uint64_t s1 = 0x05d1f7c9;
 
 	uint32_t const t0 = s0;
 	uint32_t t1 = s1;
-	uint32_t const result = t0 * 0x9e3779bb;
+	uint32_t const result = t0 * 0x589bb6ca;
 
 	t1 ^= t0;
 	s0 = rot32(t0, 26) ^ t1 ^ (t1 << 9); // a, b
@@ -247,10 +247,10 @@ uint32_t xoroshiro64s(void) {
 // xoshiro256**
 uint64_t xoshiro256ss(void) {
 	// Seed these 64 bit manually
-	static uint64_t s0 = 0x1e872bf277bbd5e4;
-	static uint64_t s1 = 0xba317487d87c4159;
-	static uint64_t s2 = 0x362fa9620e9a1c8a;
-	static uint64_t s3 = 0xc918db525116e49c;
+	static uint64_t s0 = 0x6f79f27c453f5ce2;
+	static uint64_t s1 = 0x2d4f4c8f8a6b81a9;
+	static uint64_t s2 = 0x9a7773469eb18730;
+	static uint64_t s3 = 0x3a282a6cb9086b8f;
 
 	uint64_t const result = rot64(s1 * 5, 7) * 9;
 	uint64_t const t = s1 << 17;
@@ -268,10 +268,10 @@ uint64_t xoshiro256ss(void) {
 // xoshiro256++
 uint64_t xoshiro256pp(void) {
 	// Seed these 64 bit manually
-	static uint64_t s0 = 0x1e872bf277bbd5e4;
-	static uint64_t s1 = 0xba317487d87c4159;
-	static uint64_t s2 = 0x362fa9620e9a1c8a;
-	static uint64_t s3 = 0xc918db525116e49c;
+	static uint64_t s0 = 0xe7e6f39e3fe6d812;
+	static uint64_t s1 = 0xfe353a4f68cba671;
+	static uint64_t s2 = 0x036d46d664128f31;
+	static uint64_t s3 = 0x03772003383c1451;
 
 	uint64_t const result = rot64(s0 + s3, 23) + s0;
 	uint64_t const t = s1 << 17;
@@ -289,10 +289,10 @@ uint64_t xoshiro256pp(void) {
 // xoshiro256+ faster variant
 uint64_t xoshiro256p(void) {
 	// Seed these 64 bit manually
-	static uint64_t s0 = 0x300eb059795dc07c;
-	static uint64_t s1 = 0x5b80e5ea8841a0cf;
-	static uint64_t s2 = 0x919572a617c344d3;
-	static uint64_t s3 = 0xa92e3913be8d584d;
+	static uint64_t s0 = 0x14cd16b6e9df9e27;
+	static uint64_t s1 = 0x7831374fca4ed8df;
+	static uint64_t s2 = 0x685824bdf7c9dfb9;
+	static uint64_t s3 = 0x29264c08627194c1;
 
 	uint64_t const result = s0 + s3;
 	uint64_t const t = s1 << 17;
@@ -311,8 +311,8 @@ uint64_t xoshiro256p(void) {
 // xoroshiro128**
 uint64_t xoroshiro128ss(void) {
 	// Seed these 64 bit manually
-	static uint64_t s0 = 0xa838cd0e0aeb110b;
-	static uint64_t s1 = 0x99fe19b209da8e32;
+	static uint64_t s0 = 0x116c50456520ca17;
+	static uint64_t s1 = 0x004a6c88da91336d;
 
 	uint64_t const t0 = s0;
 	uint64_t t1 = s1;
@@ -327,8 +327,8 @@ uint64_t xoroshiro128ss(void) {
 // xoroshiro128++
 uint64_t xoroshiro128pp(void) {
 	// Seed these 64 bit manually
-	static uint64_t s0 = 0xaafdbd4fce743b4d;
-	static uint64_t s1 = 0xcaee5c952c4ae6a8;
+	static uint64_t s0 = 0xf5b0ac38761054b4;
+	static uint64_t s1 = 0x2413e73067774b0d;
 
 	uint64_t const t0 = s0;
 	uint64_t t1 = s1;
@@ -364,7 +364,7 @@ uint16_t brad16(void) {
 	static uint8_t const a = 5, b = 3, c = 13;
 	static uint16_t x = 1, y = 1;
 	uint16_t t = (x ^ (x << a));
-	x = y * 3;
+	x = y;
 	return y = (y ^ (y >> c)) ^ (t ^ (t >> b));
 }
 
@@ -393,8 +393,8 @@ uint8_t xshift8(void) {
 // Bob Jenkins Small Fast chaotic PRNG
 // http://burtleburtle.net/bob/rand/smallprng.html
 uint64_t jsf64(void) {
-	static uint64_t a = 0xf1eaeb0597955eed;
-	static uint64_t b = 0x80ccff3cee5c952c, c = 0x80ccff3cee5c952c, d = 0x80ccff3cee5c952c;
+	static uint64_t a = 0xd336dca32b3f3250;
+	static uint64_t b = 0x0c4ce13cca51e105, c = 0x0c4ce13cca51e105, d = 0x0c4ce13cca51e105;
 
 	uint64_t e = a - rot64(b, 7);
 	a = b ^ rot64(c, 13);
@@ -403,8 +403,8 @@ uint64_t jsf64(void) {
 	return d = e + a;
 }
 uint32_t jsf32(void) {
-	static uint32_t a = 0xf1ea5eed;
-	static uint32_t b = 0x80ccff3c, c = 0x80ccff3c, d = 0x80ccff3c;
+	static uint32_t a = 0x596fece3;
+	static uint32_t b = 0x3028b6ad, c = 0x3028b6ad, d = 0x3028b6ad;
 
 	uint32_t e = a - rot32(b, 27);
 	a = b ^ rot32(c, 17);
@@ -414,8 +414,8 @@ uint32_t jsf32(void) {
 }
 // https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html
 uint16_t jsf16(void) {
-	static uint16_t a = 0xf1ea;
-	static uint16_t b = 0x80cc, c = 0x80cc, d = 0x80cc;
+	static uint16_t a = 0xf5ae;
+	static uint16_t b = 0x290c, c = 0x290c, d = 0x290c;
 
 	uint16_t e = a - rot16(b, 13);
 	a = b ^ rot16(c, 8);
@@ -424,8 +424,8 @@ uint16_t jsf16(void) {
 	return d = e + a;
 }
 uint8_t jsf8(void) {
-	static uint8_t a = 0xf1;
-	static uint8_t b = 0xee, c = 0xee, d = 0xee;
+	static uint8_t a = 0x9d;
+	static uint8_t b = 0x78, c = 0x78, d = 0x78;
 
 	uint8_t e = a - rot8(b, 1);
 	a = b ^ rot8(c, 4);
