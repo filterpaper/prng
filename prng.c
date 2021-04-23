@@ -34,69 +34,63 @@ uint8_t pcg8(void) {
 	static uint16_t state = 0x2fd5;
 	static uint16_t const inc = 0x8893;
 
-	uint16_t oldstate = state;
+	uint16_t x = state;
 	state = state * 12829U + (inc|1);
 
-/*	uint16_t value = ((oldstate >> 5U) ^ oldstate) >> 5U;
-	uint32_t rot = oldstate >> 13U;
-	return (value >> rot) | (value << ((- rot) & 7));*/
-	#define pcg_rot8(x,k) (((x) >> (k))|((x) << ((- k) & 7)))
-	return pcg_rot8((uint8_t)(((oldstate >> 5U) ^ oldstate) >> 5U), (oldstate >> 13U));
+	uint16_t value = ((x >> 5U) ^ x) >> 5U;
+	uint32_t rot = x >> 13U;
+	return (value >> rot) | (value << ((- rot) & 7));
 }
 // pcg_mcg_16_xsh_rs_8_random_r
 uint8_t pcg8_fast(void) {
 	static uint16_t state = 0xc206;
 
-	uint16_t oldstate = state;
+	uint16_t x = state;
 	state = state * 12829U;
 
-	return ((oldstate >> 7U) ^ oldstate) >> ((oldstate >> 14U) + 3U);
+	return ((x >> 7U) ^ x) >> ((x >> 14U) + 3U);
 }
 // pcg_mcg_32_xsh_rr_16_random_r
 uint16_t pcg16(void) {
 	static uint32_t state = 0x33067c1f;
 	static uint32_t const inc = 0x0a29cacc;
 
-	uint32_t oldstate = state;
+	uint32_t x = state;
 	state = state * 747796405U + (inc|1);
 
-/*	uint16_t value = ((oldstate >> 10U) ^ oldstate) >> 12U;
-	uint32_t rot = oldstate >> 28U;
-	return (value >> rot) | (value << ((- rot) & 15));*/
-	#define pcg_rot16(x,k) (((x) >> (k))|((x) << ((- k) & 15)))
-	return pcg_rot16((uint16_t)(((oldstate >> 10U) ^ oldstate) >> 12U), (oldstate >> 28U));
+	uint16_t value = ((x >> 10U) ^ x) >> 12U;
+	uint32_t rot = x >> 28U;
+	return (value >> rot) | (value << ((- rot) & 15));
 }
 // pcg_mcg_32_xsh_rs_16_random_r
 uint16_t pcg16_fast(void) {
 	static uint32_t state = 0x406832dd;
 
-	uint32_t oldstate = state;
+	uint32_t x = state;
 	state = state * 747796405U + 1U;
 
-	return ((oldstate >> 11U) ^ oldstate) >> ((oldstate >> 30U) + 11U);
+	return ((x >> 11U) ^ x) >> ((x >> 30U) + 11U);
 }
 // pcg_mcg_64_xsh_rr_32_random_r
 uint32_t pcg32(void) {
 	static uint64_t state = 0x7e80dd681fd723f5;
 	static uint64_t const inc = 0x9ca185c64b7bf115;
 
-	uint64_t oldstate = state;
+	uint64_t x = state;
 	state = state * 6364136223846793005ULL + (inc|1);
 
-/*	uint32_t value = ((oldstate >> 18U) ^ oldstate) >> 27U;
-	uint32_t rot = oldstate >> 59U;
-	return (value >> rot) | (value << ((- rot) & 31));*/
-	#define pcg_rot32(x,k) (((x) >> (k))|((x) << ((- k) & 31)))
-	return pcg_rot32((uint32_t)(((oldstate >> 18U) ^ oldstate) >> 27U), (oldstate >> 59U));
+	uint32_t value = ((x >> 18U) ^ x) >> 27U;
+	uint32_t rot = x >> 59U;
+	return (value >> rot) | (value << ((- rot) & 31));
 }
 // pcg_mcg_64_xsh_rs_32_random_r
 uint32_t pcg32_fast(void) {
 	static uint64_t state = 0x406832dd910219e5;
 
-	uint64_t oldstate = state;
+	uint64_t x = state;
 	state = state * 6364136223846793005ULL;
 
-	return ((oldstate >> 22U) ^ oldstate) >> ((oldstate >> 61U) + 22U);
+	return ((x >> 22U) ^ x) >> ((x >> 61U) + 22U);
 }
 
 
@@ -146,10 +140,10 @@ uint32_t xorshift128(void) {
 #define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
 
 
-// General-purpose xoshiro 32-bit PRNG variants
-// Improved versions of George Marsaglia xorshift
 // https://prng.di.unimi.it/
-// uint32_t rot32(uint32_t const x, int const k) { return (x << k) | (x >> (32 - k)); }
+// Improved versions of George Marsaglia xorshift
+// General-purpose xoshiro 32-bit PRNG variants
+//uint32_t rot32(uint32_t const x, int const k) { return (x << k) | (x >> (32 - k)); }
 // xoshiro128**
 uint32_t xoshiro128ss(void) {
 	// Seed these 32 bit manually
@@ -249,9 +243,7 @@ uint32_t xoroshiro64s(void) {
 }
 
 // General-purpose xoshiro 64-bit PRNG variants
-// Improved versions of George Marsaglia xorshift
-// https://prng.di.unimi.it/
-// uint64_t rot64(uint64_t const x, int const k) { return (x << k) | (x >> (64 - k)); }
+//uint64_t rot64(uint64_t const x, int const k) { return (x << k) | (x >> (64 - k)); }
 // xoshiro256**
 uint64_t xoshiro256ss(void) {
 	// Seed these 64 bit manually
@@ -366,7 +358,7 @@ uint64_t xoroshiro128p(void) {
 }
 
 
-// Brad Forschinger's 16 bit xorshift rng
+// Brad Forschinger's XORshift
 // http://b2d-f9r.blogspot.com/2010/08/16-bit-xorshift-rng-now-with-more.html
 uint16_t brad16(void) {
 	static uint8_t const a = 5, b = 3, c = 13;
@@ -400,7 +392,6 @@ uint8_t xshift8(void) {
 
 // Bob Jenkins Small Fast chaotic PRNG
 // http://burtleburtle.net/bob/rand/smallprng.html
-//#define rot64(x,k) (((x) << (k))|((x) >> (64 - (k))))
 uint64_t jsf64(void) {
 	static uint64_t a = 0xf1eaeb0597955eed;
 	static uint64_t b = 0x80ccff3cee5c952c, c = 0x80ccff3cee5c952c, d = 0x80ccff3cee5c952c;
@@ -411,7 +402,6 @@ uint64_t jsf64(void) {
 	c = d + e;
 	return d = e + a;
 }
-//#define rot32(x,k) (((x) << (k))|((x) >> (32 - (k))))
 uint32_t jsf32(void) {
 	static uint32_t a = 0xf1ea5eed;
 	static uint32_t b = 0x80ccff3c, c = 0x80ccff3c, d = 0x80ccff3c;
@@ -423,7 +413,6 @@ uint32_t jsf32(void) {
 	return d = e + a;
 }
 // https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html
-//#define rot16(x,k) (((x) << (k))|((x) >> (16 - (k))))
 uint16_t jsf16(void) {
 	static uint16_t a = 0xf1ea;
 	static uint16_t b = 0x80cc, c = 0x80cc, d = 0x80cc;
@@ -434,8 +423,6 @@ uint16_t jsf16(void) {
 	c = d + e;
 	return d = e + a;
 }
-// https://www.pcg-random.org/posts/bob-jenkins-small-prng-passes-practrand.html
-//#define rot8(x,k) (((x) << (k))|((x) >> (8 - (k))))
 uint8_t jsf8(void) {
 	static uint8_t a = 0xf1;
 	static uint8_t b = 0xee, c = 0xee, d = 0xee;
