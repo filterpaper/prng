@@ -39,13 +39,13 @@ void raninit (ranctx *x, u8 seed) {
 	x->a = 0xbb6aa7b595540e5a;
 	x->b = x->c = x->d = seed;
 
-	for (uint8_t i=(uint8_t)seed; i>0; --i) { (void)ranval(x); }
+	for (uint16_t i=seed; i>0; --i) { (void)ranval(x); }
 }
 
 int main() {
 	ranctx rng;
 
-	// Seed using OSX random function
+	// Init using OSX random function as seed
 	srandom(time(NULL));
 	raninit(&rng, random()*random());
 
