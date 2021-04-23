@@ -36,7 +36,7 @@ u8 ranval (ranctx *x) {
 }
 
 void raninit (ranctx *x, u8 seed) {
-	x->a = 0xbb6aa7b595540e5a;
+	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
 	for (uint16_t i=seed; i>0; --i) { (void)ranval(x); }
