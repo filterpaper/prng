@@ -32,16 +32,14 @@ u8 ranval (ranctx *x) {
 	x->a = x->b ^ rot(x->c, 13);
 	x->b = x->c + rot(x->d, 37);
 	x->c = x->d + e;
-	x->d = e + x->a;
-	return x->d;
+	return x->d = e + x->a;
 }
 
 void raninit (ranctx *x, u8 seed) {
-	u8 i;
-	x->a = 0xf1ea5eed, x->b = x->c = x->d = seed;
-	for (i=0; i<20; ++i) {
-		(void)ranval(x);
-	}
+	x->a = 0xbb6aa7b595540e5a;
+	x->b = x->c = x->d = seed;
+
+	for (uint8_t i=(uint8_t)seed; i>0; --i) { (void)ranval(x); }
 }
 
 int main() {
@@ -51,10 +49,9 @@ int main() {
 	srandom(time(NULL));
 	raninit(&rng, random()*random());
 
-	for (int i = 0; i < 10; i++) {
+	for (uint8_t i=0; i<16; ++i) {
 		printf("0x%016llx 0x%016llx 0x%016llx 0x%016llx\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
 	}
-	//printf("%ld\n", time(NULL));
 
 	return 0;
 }

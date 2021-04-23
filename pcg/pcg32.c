@@ -29,6 +29,7 @@ uint32_t pcg32_random_r(pcg32_random_t* rng) {
 	uint64_t oldstate = rng->state;
 	// Advance internal state
 	rng->state = oldstate * 6364136223846793005ULL + (rng->inc|1);
+
 	// Calculate output function (XSH RR), uses old state for max ILP
 	uint32_t xorshifted = ((oldstate >> 18u) ^ oldstate) >> 27u;
 	uint32_t rot = oldstate >> 59u;
@@ -36,28 +37,23 @@ uint32_t pcg32_random_r(pcg32_random_t* rng) {
 }
 
 void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) {
-	//rng->state = 0U;
-	rng->state = random()*random();
+	rng->state = 0u;
 	rng->inc = (initseq << 1u) | 1u;
-	pcg32_random_r(rng);
+	for (uint8_t i=(uint8_t)initseq; i>0; --i) { (void)pcg32_random_r(rng); }
 	rng->state += initstate;
-	pcg32_random_r(rng);
+	for (uint8_t i=(uint8_t)initstate; i>0; --i) { (void)pcg32_random_r(rng); }
 }
 
 int main() {
-	size_t i;
 	pcg32_random_t pcg;
 
 	// Seed using OSX random function
 	srandom(time(NULL));
 	pcg32_srandom_r(&pcg, random()*random(), random()*random());
 
-	printf("state: 0x%016llx  inc: 0x%016llx\n", pcg.state, pcg.inc);
-
-	for (i = 0; i < 10; i++) {
+	for (uint8_t i=0; i<16; ++i) {
 		printf("0x%08x 0x%08x 0x%08x 0x%08x\n", pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg));
 	}
-	//printf("%ld\n", time(NULL));
 
 	return 0;
 }
