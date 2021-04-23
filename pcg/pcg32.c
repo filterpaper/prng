@@ -26,14 +26,14 @@
 typedef struct { uint64_t state;  uint64_t inc; } pcg32_random_t;
 
 uint32_t pcg32_random_r(pcg32_random_t* rng) {
-	uint64_t oldstate = rng->state;
+	uint64_t x = rng->state;
 	// Advance internal state
-	rng->state = oldstate * 6364136223846793005ULL + (rng->inc|1);
+	rng->state = x * 6364136223846793005ULL + (rng->inc|1);
 
 	// Calculate output function (XSH RR), uses old state for max ILP
-	uint32_t xorshifted = ((oldstate >> 18u) ^ oldstate) >> 27u;
-	uint32_t rot = oldstate >> 59u;
-	return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
+	uint32_t shifted = ((x >> 18u) ^ x) >> 27u;
+	uint32_t rot = x >> 59u;
+	return (shifted >> rot) | (shifted << ((-rot) & 31));
 }
 
 void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) {
