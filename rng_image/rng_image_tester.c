@@ -33,8 +33,9 @@
 #include <string.h>
 
 // Image output settings
-#define WIDTH  550
-#define HEIGHT 550
+//#define BIGSAMPLE // RNG on each color
+#define WIDTH  800
+#define HEIGHT 800
 #define FILENAME "24bit.bmp"
 
 
@@ -64,8 +65,8 @@
 
 // pcg_mcg_16_xsh_rr_8_random_r
 uint8_t pcg8(void) {
-	static uint16_t state = 0x2fd5;
-	static uint16_t const inc = 0x8893;
+	static uint16_t state = 0x2af3;
+	static uint16_t const inc = 0x3c97;
 
 	uint16_t oldstate = state;
 	state = state * 12829U + (inc|1);
@@ -421,17 +422,18 @@ int main(void) {
 	unsigned char* buf = malloc(imagesize);
 	for(int row = height - 1; row >= 0; row--) {
 		for(int col = 0; col < width; col++) {
-
+#ifndef BIGSAMPLE
 			uint_fast8_t blue, green, red;
 			blue = green = red = (uint8_t)RND;
-/*
+#else
 			uint_fast8_t blue  = (uint8_t)RND;
 			uint_fast8_t green = (uint8_t)RND;
 			uint_fast8_t red   = (uint8_t)RND;
 
 			uint_fast8_t gray = 0.3*red + 0.59*green + 0.11*blue;
+			//uint_fast8_t gray = (red + green + blue)/3;
 			blue = green = red = gray;
-*/
+#endif
 			buf[row * width_in_bytes + col * 3 + 0] = blue;
 			buf[row * width_in_bytes + col * 3 + 1] = green;
 			buf[row * width_in_bytes + col * 3 + 2] = red;
