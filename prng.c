@@ -62,7 +62,7 @@ uint16_t pcg16(void) {
 	uint32_t rot = x >> 28U;
 	return (value >> rot) | (value << ((- rot) & 15));
 }
-// pcg_mcg_32_xsh_rs_16_random_r
+// pcg_mcg_64_xsh_rr_32_random_r
 uint16_t pcg16_fast(void) {
 	static uint32_t state = 0x8fe2b20f;
 

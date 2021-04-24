@@ -24,10 +24,10 @@
 #include <time.h>
 
 typedef uint64_t u8;
-typedef struct ranctx { u8 a; u8 b; u8 c; u8 d; } ranctx;
+typedef struct { u8 a; u8 b; u8 c; u8 d; } ranctx_t;
 
 #define rot(x,k) (((x)<<(k))|((x)>>(64-(k))))
-u8 ranval(ranctx *x) {
+u8 ranval(ranctx_t *x) {
 	u8 e = x->a - rot(x->b, 7);
 	x->a = x->b ^ rot(x->c, 13);
 	x->b = x->c + rot(x->d, 37);
@@ -35,7 +35,7 @@ u8 ranval(ranctx *x) {
 	return x->d = e + x->a;
 }
 
-void raninit(ranctx *x, u8 seed) {
+void raninit(ranctx_t *x, u8 seed) {
 	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
@@ -43,7 +43,7 @@ void raninit(ranctx *x, u8 seed) {
 }
 
 int main(int argc, char **argv) {
-	ranctx rng;
+	ranctx_t rng;
 
 	// Init using OSX random function as seed
 	srandom(time(NULL));
@@ -55,9 +55,10 @@ int main(int argc, char **argv) {
 			val64 = ranval(&rng);
 			fwrite((void*) &val64, sizeof(val64), 1, stdout);
 		}
-	}
-	for (uint8_t i=0; i<16; ++i) {
-		printf("0x%016llx 0x%016llx 0x%016llx 0x%016llx\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
+	} else {
+		for (uint8_t i=0; i<16; ++i) {
+			printf("0x%016llx 0x%016llx 0x%016llx 0x%016llx\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
+		}
 	}
 
 	return 0;
