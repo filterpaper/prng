@@ -38,7 +38,7 @@
 typedef struct { uint64_t state;  uint64_t inc; } pcg32_random_t;
 
 // pcg_mcg_32_xsh_rr_16_random_r
-uint32_t pcg32_random_r(pcg32_random_t* rng) {
+uint32_t pcg32_random_r(pcg32_random_t *rng) {
 	uint64_t x = rng->state;
 	// Advance internal state
 	rng->state = x * PCG_DEFAULT_MULTIPLIER_64 + (rng->inc|1);
@@ -49,7 +49,7 @@ uint32_t pcg32_random_r(pcg32_random_t* rng) {
 	return (shifted >> rot) | (shifted << ((-rot) & 31));
 }
 
-void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) {
+void pcg32_srandom_r(pcg32_random_t *rng, uint64_t initstate, uint64_t initseq) {
 	rng->state = 0u;
 	rng->inc = (initseq << 1u) | 1u;
 	for (uint8_t i=initseq; i>0; --i) { (void)pcg32_random_r(rng); }
@@ -57,7 +57,7 @@ void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) 
 	for (uint8_t i=initstate; i>0; --i) { (void)pcg32_random_r(rng); }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 	pcg32_random_t pcg;
 
 	// Init using OSX random function as seed

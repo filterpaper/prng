@@ -27,7 +27,7 @@ typedef uint64_t u8;
 typedef struct ranctx { u8 a; u8 b; u8 c; u8 d; } ranctx;
 
 #define rot(x,k) (((x)<<(k))|((x)>>(64-(k))))
-u8 ranval (ranctx *x) {
+u8 ranval(ranctx *x) {
 	u8 e = x->a - rot(x->b, 7);
 	x->a = x->b ^ rot(x->c, 13);
 	x->b = x->c + rot(x->d, 37);
@@ -35,14 +35,14 @@ u8 ranval (ranctx *x) {
 	return x->d = e + x->a;
 }
 
-void raninit (ranctx *x, u8 seed) {
+void raninit(ranctx *x, u8 seed) {
 	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
 	for (uint16_t i=seed; i>0; --i) { (void)ranval(x); }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 	ranctx rng;
 
 	// Init using OSX random function as seed
