@@ -57,13 +57,20 @@ void pcg32_srandom_r(pcg32_random_t* rng, uint64_t initstate, uint64_t initseq) 
 	for (uint8_t i=initstate; i>0; --i) { (void)pcg32_random_r(rng); }
 }
 
-int main() {
+int main(int argc, char** argv) {
 	pcg32_random_t pcg;
 
 	// Init using OSX random function as seed
 	srandom(time(NULL));
 	pcg32_srandom_r(&pcg, random()*random(), random()*random());
 
+	if (argc>1) { // Binary stream output
+		uint32_t val32;
+		while (1) {
+			val32 = ranval(&rng);
+			fwrite((void*) &val32, sizeof(val32), 1, stdout);
+		}
+	}
 	for (uint8_t i=0; i<16; ++i) {
 		printf("0x%08x 0x%08x 0x%08x 0x%08x\n", pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg));
 	}

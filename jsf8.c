@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Simple implementation of Bob Jenkin's small fast 64-bit PRNG
+/* Simple implementation of Bob Jenkin's small fast 8j-bit PRNG
    http://burtleburtle.net/bob/rand/smallprng.html
  */
 
@@ -23,23 +23,23 @@
 #include <stdio.h>
 #include <time.h>
 
-typedef uint64_t u8;
-typedef struct ranctx { u8 a; u8 b; u8 c; u8 d; } ranctx;
+typedef uint8_t u1;
+typedef struct ranctx { u1 a; u1 b; u1 c; u1 d; } ranctx;
 
-#define rot(x,k) (((x)<<(k))|((x)>>(64-(k))))
-u8 ranval (ranctx *x) {
-	u8 e = x->a - rot(x->b, 7);
-	x->a = x->b ^ rot(x->c, 13);
-	x->b = x->c + rot(x->d, 37);
+#define rot(x,k) (((x)<<(k))|((x)>>(8-(k))))
+u1 ranval (ranctx *x) {
+	u1 e = x->a - rot(x->b, 1);
+	x->a = x->b ^ rot(x->c, 4);
+	x->b = x->c + x->d;
 	x->c = x->d + e;
 	return x->d = e + x->a;
 }
 
-void raninit (ranctx *x, u8 seed) {
+void raninit (ranctx *x, u1 seed) {
 	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
-	for (uint16_t i=seed; i>0; --i) { (void)ranval(x); }
+	for (u1 i=seed; i>0; --i) { (void)ranval(x); }
 }
 
 int main(int argc, char** argv) {
@@ -47,17 +47,17 @@ int main(int argc, char** argv) {
 
 	// Init using OSX random function as seed
 	srandom(time(NULL));
-	raninit(&rng, random()*random());
+	raninit(&rng, random());
 
 	if (argc>1) { // Binary stream output
-		u8 val64;
+		u1 val8;
 		while (1) {
-			val64 = ranval(&rng);
-			fwrite((void*) &val64, sizeof(val64), 1, stdout);
+			val8 = ranval(&rng);
+			fwrite((void*) &val8, sizeof(val8), 1, stdout);
 		}
 	}
 	for (uint8_t i=0; i<16; ++i) {
-		printf("0x%016llx 0x%016llx 0x%016llx 0x%016llx\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
+		printf("0x%02x 0x%02x 0x%02x 0x%02x\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
 	}
 
 	return 0;

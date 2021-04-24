@@ -39,16 +39,23 @@ void raninit (ranctx *x, u2 seed) {
 	x->a = seed*random();
 	x->b = x->c = x->d = seed;
 
-	for (uint16_t i=seed; i>0; --i) { (void)ranval(x); }
+	for (u2 i=seed; i>0; --i) { (void)ranval(x); }
 }
 
-int main() {
+int main(int argc, char** argv) {
 	ranctx rng;
 
 	// Init using OSX random function as seed
 	srandom(time(NULL));
 	raninit(&rng, random());
 
+	if (argc>1) { // Binary stream output
+		u2 val16;
+		while (1) {
+			val16 = ranval(&rng);
+			fwrite((void*) &val16, sizeof(val16), 1, stdout);
+		}
+	}
 	for (uint8_t i=0; i<16; ++i) {
 		printf("0x%04hx 0x%04hx 0x%04hx 0x%04hx\n", ranval(&rng), ranval(&rng), ranval(&rng), ranval(&rng));
 	}
