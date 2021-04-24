@@ -24,16 +24,15 @@
 	RS random shift
   */
 
-#define PCG_DEFAULT_MULTIPLIER_8   141U
-#define PCG_DEFAULT_MULTIPLIER_16  12829U
-#define PCG_DEFAULT_MULTIPLIER_32  747796405U
-#define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
-
-
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
+
+#define PCG_DEFAULT_MULTIPLIER_8   141U
+#define PCG_DEFAULT_MULTIPLIER_16  12829U
+#define PCG_DEFAULT_MULTIPLIER_32  747796405U
+#define PCG_DEFAULT_MULTIPLIER_64  6364136223846793005ULL
 
 typedef struct { uint64_t state;  uint64_t inc; } pcg64_random_t;
 
@@ -70,9 +69,12 @@ int main(int argc, char **argv) {
 			val32 = pcg32_random_r(&pcg);
 			fwrite((void*) &val32, sizeof(val32), 1, stdout);
 		}
-	}
-	for (uint8_t i=0; i<16; ++i) {
-		printf("0x%08x 0x%08x 0x%08x 0x%08x\n", pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg));
+	} else {
+		for (uint8_t i=0; i<8; ++i) {
+			for (uint8_t j=0; j<2; ++j)
+			{ printf("0x%08x 0x%08x 0x%08x 0x%08x ", pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg), pcg32_random_r(&pcg)); }
+			printf("\n");
+		}
 	}
 
 	return 0;

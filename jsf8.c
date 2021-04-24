@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Simple implementation of Bob Jenkin's small fast 8j-bit PRNG
+/* Simple implementation of Bob Jenkin's small fast 8-bit PRNG
    http://burtleburtle.net/bob/rand/smallprng.html
  */
 
