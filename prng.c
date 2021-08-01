@@ -433,6 +433,19 @@ uint8_t jsf8(void) {
 	c = d + e;
 	return d = e + a;
 }
+uint8_t jsfsmall(void) {
+	static uint8_t a = 0x9d, b = 0x78, c = 0x78;
+	uint8_t e = a - rot8(b, 1);
+	a = b ^ rot8(c, 4);
+	b = c + e;
+	return c = e + a;
+}
+uint8_t jsftiny(void) {
+	static uint8_t a = 0x9d, b = 0x78;
+	uint8_t c = a - ((b << 1)|(b >> 7));
+	a = b ^ ((c << 4)|(c >> 4));
+	return b = c + a;
+}
 
 
 int main(int argc, char** argv) {
@@ -469,6 +482,8 @@ int main(int argc, char** argv) {
 		else if (strcmp(argv[1], "jsf16") == 0) { val16 = jsf16(); fwrite((void*) &val16, sizeof(val16), 1, stdout); }
 		else if (strcmp(argv[1], "jsf32") == 0) { val32 = jsf32(); fwrite((void*) &val32, sizeof(val32), 1, stdout); }
 		else if (strcmp(argv[1], "jsf64") == 0) { val64 = jsf64(); fwrite((void*) &val64, sizeof(val64), 1, stdout); }
+		else if (strcmp(argv[1], "jsfsmall") == 0) { val8=jsfsmall(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
+		else if (strcmp(argv[1], "jsftiny") == 0) { val8=jsftiny(); fwrite((void*) &val8, sizeof(val8), 1, stdout); }
 		else { return 1; }
 	}
 	return 0;

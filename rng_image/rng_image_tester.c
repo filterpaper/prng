@@ -33,14 +33,14 @@
 #include <string.h>
 
 // Image output settings
-//#define BIGSAMPLE // RNG on each color
-#define WIDTH  800
-#define HEIGHT 800
+#define BIGSAMPLE // RNG on each color
+#define WIDTH  1500
+#define HEIGHT 1500
 #define FILENAME "24bit.bmp"
 
 
 // RNG function selection, pick one
-#define RND pcg8()
+//#define RND pcg8()
 //#define RND pcg8_fast()
 //#define RND pcg16()
 //#define RND pcg16_fast()
@@ -55,12 +55,14 @@
 //#define RND xoroshiro128pp()
 //#define RND xoroshiro128ss()
 //#define RND brad16()
-//#define RND tzarc_prng()
+#define RND tzarc_prng()
 //#define RND xshift8()
 //#define RND jsf64()
 //#define RND jsf32()
 //#define RND jsf16()
 //#define RND jsf8()
+//#define RND jsfsmall()
+//#define RND jsftiny()
 
 
 // pcg_mcg_16_xsh_rr_8_random_r
@@ -303,14 +305,14 @@ uint16_t brad16(void) {
 // @tzarc's 8 bit XORshift, produces minor repeated pattern
 // https://github.com/tzarc/qmk_build/blob/bebe5e5b21e99bdb8ff41500ade1eac2d8417d8c/users-tzarc/tzarc_common.c#L57-L63
 static uint8_t tzarc_prng(void) {
-	static uint8_t s = 0xAA, a = 0;
+	static uint8_t s = 15, a = 97;
 	s ^= s << 3;
 	s ^= s >> 5;
 	s ^= a++ >> 2;
 	return s;
 }
 
-
+j
 
 // Simple 4-register 8 bit XORshift
 // https://github.com/edrosten/8bit_rng
@@ -372,6 +374,21 @@ uint8_t jsf8(void) {
 	b = c + d;
 	c = d + e;
 	return d = e + a;
+}
+
+uint8_t jsfsmall(void) {
+	static uint8_t a = 0x9d, b = 0x78, c = 0x78;
+	uint8_t t = a - ((b << 1)|(b >> 7));
+	a = b ^ ((c << 4)|(c >> 4));
+	b = c + t;
+	return c = t + a;
+}
+
+
+uint8_t random8(void) {
+	static uint16_t rand16seed = 0x5eed;
+	rand16seed = (rand16seed * (uint16_t)2053) + (uint16_t)13849;
+	return (uint8_t)(((uint8_t)(rand16seed & 0xFF)) + ((uint8_t)(rand16seed >> 8)));
 }
 
 
